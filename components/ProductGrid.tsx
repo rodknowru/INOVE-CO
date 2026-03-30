@@ -25,7 +25,7 @@ const products: Product[] = [
     fullDescription: 'Мягкое очищение и поддержка цвета для окрашенных волос.',
     price: '1 800 ₽',
     priceNum: 1800,
-    image: '/images/products/1 800 ₽ Шампунь для окрашенных волос INOVE-CO.jpg',
+    image: '/images/products/shampoo-colored.jpg',
     tag: 'Бестселлер',
   },
   {
@@ -35,7 +35,7 @@ const products: Product[] = [
     fullDescription: 'Бережно очищает и придаёт объём тонким волосам.',
     price: '1 800 ₽',
     priceNum: 1800,
-    image: '/images/products/1 800 ₽ Шампунь для тонких волос INOVE-CO .jpg',
+    image: '/images/products/shampoo-thin.jpg',
   },
   {
     id: '3',
@@ -44,7 +44,7 @@ const products: Product[] = [
     fullDescription: 'Увлажняет и разглаживает, продлевает яркость окрашивания.',
     price: '1 900 ₽',
     priceNum: 1900,
-    image: '/images/products/1 900 ₽ Кондиционер для окрашенных волос INOVE-CO .jpg',
+    image: '/images/products/conditioner-colored.jpg',
   },
   {
     id: '4',
@@ -53,7 +53,7 @@ const products: Product[] = [
     fullDescription: 'Лёгкий уход без утяжеления: мягкость и послушность тонких волос.',
     price: '1 900 ₽',
     priceNum: 1900,
-    image: '/images/products/1 900 ₽ Кондиционер для тонких волос INOVE-CO.jpg',
+    image: '/images/products/conditioner-thin.jpg',
   },
   {
     id: '5',
@@ -62,7 +62,7 @@ const products: Product[] = [
     fullDescription: 'Интенсивное восстановление и блеск для окрашенных волос.',
     price: '2 100 ₽',
     priceNum: 2100,
-    image: '/images/products/2 100 ₽ Маска для окрашенных волос INOVE-CO .jpg',
+    image: '/images/products/mask-colored.jpg',
   },
   {
     id: '6',
@@ -71,7 +71,7 @@ const products: Product[] = [
     fullDescription: 'Питательная маска: укрепление и объём без тяжести.',
     price: '2 100 ₽',
     priceNum: 2100,
-    image: '/images/products/2 100₽  Маска для тонких волос INOVE-CO.jpg',
+    image: '/images/products/mask-thin.jpg',
     tag: 'Новинка',
   },
 ]

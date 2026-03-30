@@ -20,7 +20,7 @@ export default function Hero() {
         style={{ y }}
       >
         <Image
-          src="/about/01-product.jpeg"
+          src="/images/hero/hero-face.jpg"
           alt=""
           fill
           className="object-cover"
