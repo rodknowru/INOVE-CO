@@ -37,7 +37,7 @@ export default function Navigation() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.8 }}
-        className={`sticky top-0 z-50 flex items-center px-4 sm:px-6 md:px-12 min-h-[64px] md:min-h-[86px] py-2 transition-all duration-300 ${
+        className={`sticky top-0 z-[100] flex items-center px-4 sm:px-6 md:px-12 min-h-[64px] md:min-h-[86px] py-2 transition-all duration-300 ${
           isScrolled ? 'bg-warm-cream/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
         }`}
       >
@@ -106,7 +106,7 @@ export default function Navigation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-warm-cream z-[60] flex flex-col items-center justify-center gap-8 md:hidden"
+            className="fixed inset-0 bg-warm-cream z-[110] flex flex-col items-center justify-center gap-8 md:hidden"
           >
             <button
               aria-label="Закрыть меню"
