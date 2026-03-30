@@ -90,7 +90,7 @@ export default function ProductGrid() {
         >
           <div className="h-px w-12 md:w-20 bg-amber-accent" />
           <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-dark-brown text-center uppercase tracking-wider">
-            SIGNATURE COLLECTION
+            КОЛЛЕКЦИЯ
           </h2>
           <div className="h-px w-12 md:w-20 bg-amber-accent" />
         </motion.div>
@@ -120,7 +120,7 @@ export default function ProductGrid() {
             }}
             className="inline-flex items-center justify-center gap-2 min-h-[48px] px-8 md:px-12 py-4 border-2 border-dark-brown text-dark-brown font-medium uppercase tracking-wider hover:bg-dark-brown hover:text-soft-white transition-all duration-300"
           >
-            SHOP COLLECTION
+            СМОТРЕТЬ КОЛЛЕКЦИЮ
           </a>
         </motion.div>
       </div>

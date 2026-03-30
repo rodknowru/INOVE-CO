@@ -18,6 +18,7 @@ import {
 import { DELIVERY_SERVICES, type DeliveryServiceId } from '@/lib/deliveryOptions'
 import CityInput from '@/components/CityInput'
 import BrandLogo from '@/components/BrandLogo'
+import PrivacyPolicyModal from '@/components/PrivacyPolicyModal'
 import { formatRubles } from '@/lib/formatRubles'
 
 type FormData = {
@@ -53,6 +54,8 @@ export default function CheckoutPageClient() {
   const [submitting, setSubmitting] = useState(false)
   const [deliveryService, setDeliveryService] = useState<DeliveryServiceId>('cdek')
   const [success, setSuccess] = useState<{ orderId: string; city: string; address: string; delivery: DeliveryServiceId } | null>(null)
+  const [consentPd, setConsentPd] = useState(false)
+  const [policyOpen, setPolicyOpen] = useState(false)
 
   const hasHadItems = useRef(items.length > 0)
   useEffect(() => {
@@ -111,7 +114,7 @@ export default function CheckoutPageClient() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isFormValid || submitting) return
+    if (!isFormValid || !consentPd || submitting) return
     setSubmitting(true)
 
     const orderId = 'INV-' + String(Math.floor(100000 + Math.random() * 900000))
@@ -427,10 +430,30 @@ export default function CheckoutPageClient() {
                 Итого:{' '}
                 <span className="font-serif text-card-brown md:text-[28px] md:font-bold">{formatRubles(totalSum)}</span>
               </p>
+              <div className="mb-4 text-[14px] text-[#8C7E6F] font-sans leading-snug">
+                <label className="flex items-start gap-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={consentPd}
+                    onChange={(e) => setConsentPd(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-input-border text-card-brown focus:ring-accent-gold/30"
+                  />
+                  <span>
+                    Я согласен(а) на обработку персональных данных в соответствии с{' '}
+                    <button
+                      type="button"
+                      onClick={() => setPolicyOpen(true)}
+                      className="underline decoration-[#8C7E6F]/50 underline-offset-2 hover:text-card-brown transition-colors text-left"
+                    >
+                      Политикой конфиденциальности
+                    </button>
+                  </span>
+                </label>
+              </div>
               <button
                 type="submit"
                 form="checkout-form"
-                disabled={!isFormValid || submitting}
+                disabled={!isFormValid || !consentPd || submitting}
                 className="w-full min-h-[48px] md:h-[56px] md:min-h-[56px] py-4 md:py-0 rounded-lg font-sans font-medium md:text-[18px] uppercase tracking-wider transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-charcoal/30 disabled:text-charcoal enabled:bg-card-brown enabled:text-soft-white enabled:hover:bg-accent-gold"
               >
                 {submitting ? 'Отправляем...' : 'Подтвердить заказ'}
@@ -440,6 +463,7 @@ export default function CheckoutPageClient() {
         </div>
       </div>
 
+      <PrivacyPolicyModal open={policyOpen} onClose={() => setPolicyOpen(false)} />
     </div>
   )
 }
