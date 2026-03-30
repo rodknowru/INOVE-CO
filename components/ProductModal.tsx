@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect } from 'react'
-import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Product } from './ProductGrid'
 
@@ -56,13 +55,13 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-            <div className="relative aspect-[4/5] md:aspect-auto md:min-h-[600px] group">
-              <Image
+            <div className="relative aspect-[4/5] md:aspect-auto md:min-h-[600px] min-h-[280px] overflow-hidden group">
+              <img
                 src={product.image}
                 alt={product.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div className="p-12 md:p-16 flex flex-col justify-center">

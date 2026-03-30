@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/lib/CartContext'
@@ -49,7 +48,13 @@ export default function CartDrawer() {
                   {items.map((item) => (
                     <li key={item.id} className="flex gap-4 pb-4 md:pb-6 border-b border-charcoal/10 last:border-0">
                       <div className="relative w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-lg overflow-hidden bg-warm-cream">
-                        <Image src={item.image} alt={item.name} fill className="object-cover" sizes="80px" />
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-serif font-semibold text-card-brown text-sm md:text-[20px]">{item.name}</p>

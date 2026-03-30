@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useCart } from '@/lib/CartContext'
 import type { Product } from './ProductGrid'
@@ -53,12 +52,13 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.4 }}
         >
-          <Image
+          {/* Обычный img: надёжнее на части хостингов/мобильных, чем next/image для локальных файлов */}
+          <img
             src={product.image}
             alt={product.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </motion.div>
         <div
