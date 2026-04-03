@@ -58,8 +58,8 @@ const products: Product[] = [
   {
     id: '5',
     name: 'Маска для окрашенных волос INOVE-CO',
-    description: 'Интенсивное восстановление и блеск для окрашенных волос.',
-    fullDescription: 'Интенсивное восстановление и блеск для окрашенных волос.',
+    description: 'Интенсивный уход и блеск для окрашенных волос.',
+    fullDescription: 'Интенсивный уход и блеск для окрашенных волос.',
     price: '2 100 ₽',
     priceNum: 2100,
     image: '/images/products/mask-colored.jpg',

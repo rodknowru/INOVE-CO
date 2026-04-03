@@ -19,6 +19,7 @@ import { DELIVERY_SERVICES, type DeliveryServiceId } from '@/lib/deliveryOptions
 import CityInput from '@/components/CityInput'
 import BrandLogo from '@/components/BrandLogo'
 import PrivacyPolicyModal from '@/components/PrivacyPolicyModal'
+import PublicOfferModal from '@/components/PublicOfferModal'
 import { formatRubles } from '@/lib/formatRubles'
 
 type FormData = {
@@ -56,6 +57,7 @@ export default function CheckoutPageClient() {
   const [success, setSuccess] = useState<{ orderId: string; city: string; address: string; delivery: DeliveryServiceId } | null>(null)
   const [consentPd, setConsentPd] = useState(false)
   const [policyOpen, setPolicyOpen] = useState(false)
+  const [offerOpen, setOfferOpen] = useState(false)
 
   const hasHadItems = useRef(items.length > 0)
   useEffect(() => {
@@ -439,13 +441,21 @@ export default function CheckoutPageClient() {
                     className="mt-0.5 h-4 w-4 shrink-0 rounded border-input-border text-card-brown focus:ring-accent-gold/30"
                   />
                   <span>
-                    Я согласен(а) на обработку персональных данных в соответствии с{' '}
+                    Я согласен(а) на{' '}
                     <button
                       type="button"
                       onClick={() => setPolicyOpen(true)}
                       className="underline decoration-[#8C7E6F]/50 underline-offset-2 hover:text-card-brown transition-colors text-left"
                     >
-                      Политикой конфиденциальности
+                      обработку персональных данных
+                    </button>
+                    {' '}и принимаю условия{' '}
+                    <button
+                      type="button"
+                      onClick={() => setOfferOpen(true)}
+                      className="underline decoration-[#8C7E6F]/50 underline-offset-2 hover:text-card-brown transition-colors text-left"
+                    >
+                      Публичной оферты
                     </button>
                   </span>
                 </label>
@@ -464,6 +474,7 @@ export default function CheckoutPageClient() {
       </div>
 
       <PrivacyPolicyModal open={policyOpen} onClose={() => setPolicyOpen(false)} />
+      <PublicOfferModal open={offerOpen} onClose={() => setOfferOpen(false)} />
     </div>
   )
 }
