@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { motion } from 'framer-motion'
 
 const values = [
@@ -70,12 +69,12 @@ export default function About() {
           transition={{ duration: 0.8 }}
           className="relative aspect-[3/4] rounded-sm overflow-hidden"
         >
-          <Image
+          <img
             src="/about.jpeg"
             alt="О бренде INOVECO"
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+            loading="lazy"
+            decoding="async"
           />
         </motion.div>
       </div>

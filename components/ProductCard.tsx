@@ -32,6 +32,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
   }
 
   const clampQty = (v: number) => Math.min(99, Math.max(1, v))
+  const firstScreen = index < 4
 
   return (
     <motion.article
@@ -57,7 +58,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
             src={product.image}
             alt={product.name}
             className="absolute inset-0 h-full w-full object-cover"
-            loading="lazy"
+            loading={firstScreen ? 'eager' : 'lazy'}
             decoding="async"
           />
         </motion.div>

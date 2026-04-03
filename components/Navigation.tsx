@@ -33,12 +33,10 @@ export default function Navigation() {
 
   return (
     <>
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.8 }}
-        className={`sticky top-0 z-[100] flex items-center px-4 sm:px-6 md:px-12 min-h-[64px] md:min-h-[86px] py-2 transition-all duration-300 ${
-          isScrolled ? 'bg-warm-cream/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
+      {/* Не motion.header: transform на sticky-элементе ломает position:sticky на мобильных */}
+      <header
+        className={`sticky top-0 z-[100] flex items-center px-4 sm:px-6 md:px-12 min-h-[64px] md:min-h-[86px] py-2 transition-all duration-300 max-md:bg-warm-cream/95 max-md:backdrop-blur-md max-md:border-b max-md:border-charcoal/10 ${
+          isScrolled ? 'md:bg-warm-cream/90 md:backdrop-blur-md md:shadow-sm' : 'md:bg-transparent md:backdrop-blur-none'
         }`}
       >
         <div className="max-w-container mx-auto w-full flex items-center justify-between gap-4">
@@ -98,7 +96,7 @@ export default function Navigation() {
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       <AnimatePresence>
         {mobileMenuOpen && (

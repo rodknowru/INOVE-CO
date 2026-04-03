@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef } from 'react'
-import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
 export default function Hero() {
@@ -13,19 +12,19 @@ export default function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
 
   return (
-    <section id="hero" ref={ref} className="relative min-h-screen grid grid-cols-1 lg:grid-cols-5 gap-0 overflow-hidden">
+    <section id="hero" ref={ref} className="relative min-h-screen grid grid-cols-1 lg:grid-cols-5 gap-0 overflow-x-hidden min-h-0">
       {/* Фото слева — без overlay и градиента */}
       <motion.div
         className="relative lg:col-span-3 h-[50vh] md:h-[60vh] lg:h-screen overflow-hidden order-2 lg:order-1"
         style={{ y }}
       >
-        <Image
+        <img
           src="/images/hero/hero-face.jpg"
           alt=""
-          fill
-          className="object-cover"
-          priority
-          sizes="(max-width: 1024px) 100vw, 60vw"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
         />
       </motion.div>
 
