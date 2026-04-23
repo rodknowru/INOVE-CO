@@ -8,10 +8,19 @@ type Props = {
   title: string
   body: string
   ariaLabel: string
+  /** legal — «Принимаю» + «Покинуть сайт»; close-only — одна кнопка «Закрыть» */
+  footerActions?: 'legal' | 'close-only'
 }
 
 /** Единый стиль для политики, оферты и пользовательского соглашения */
-export default function LegalDocumentModal({ open, onClose, title, body, ariaLabel }: Props) {
+export default function LegalDocumentModal({
+  open,
+  onClose,
+  title,
+  body,
+  ariaLabel,
+  footerActions = 'legal',
+}: Props) {
   if (!open) return null
 
   return (
@@ -45,22 +54,34 @@ export default function LegalDocumentModal({ open, onClose, title, body, ariaLab
         </div>
 
         <div className="px-5 sm:px-6 py-5 border-t border-[#D5CBBD] flex items-center gap-3 shrink-0">
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-1/2 min-h-[48px] rounded-[8px] bg-[#3C3228] text-[#F5F0EB] font-sans text-sm font-medium transition-opacity hover:opacity-90"
-          >
-            Принимаю
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              window.location.href = 'https://google.com'
-            }}
-            className="w-1/2 min-h-[48px] rounded-[8px] border border-[#D5CBBD] bg-transparent text-[#8C7E6F] font-sans text-sm font-medium transition-colors hover:bg-[#F5F0EB]"
-          >
-            Покинуть сайт
-          </button>
+          {footerActions === 'close-only' ? (
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full min-h-[48px] rounded-[8px] bg-[#3C3228] text-[#F5F0EB] font-sans text-sm font-medium transition-opacity hover:opacity-90"
+            >
+              Закрыть
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-1/2 min-h-[48px] rounded-[8px] bg-[#3C3228] text-[#F5F0EB] font-sans text-sm font-medium transition-opacity hover:opacity-90"
+              >
+                Принимаю
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = 'https://google.com'
+                }}
+                className="w-1/2 min-h-[48px] rounded-[8px] border border-[#D5CBBD] bg-transparent text-[#8C7E6F] font-sans text-sm font-medium transition-colors hover:bg-[#F5F0EB]"
+              >
+                Покинуть сайт
+              </button>
+            </>
+          )}
         </div>
       </div>
     </motion.div>

@@ -13,9 +13,9 @@ export default function PrivacyPolicyModal({ open, onClose }: Props) {
     <LegalDocumentModal
       open={open}
       onClose={onClose}
-      title="Политика конфиденциальности"
+      title="Политика обработки персональных данных"
       body={POLICY_TEXT}
-      ariaLabel="Политика конфиденциальности"
+      ariaLabel="Политика обработки персональных данных"
     />
   )
 }

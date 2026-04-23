@@ -441,22 +441,23 @@ export default function CheckoutPageClient() {
                     className="mt-0.5 h-4 w-4 shrink-0 rounded border-input-border text-card-brown focus:ring-accent-gold/30"
                   />
                   <span>
-                    Я согласен(а) на{' '}
-                    <button
-                      type="button"
-                      onClick={() => setPolicyOpen(true)}
-                      className="underline decoration-[#8C7E6F]/50 underline-offset-2 hover:text-card-brown transition-colors text-left"
-                    >
-                      обработку персональных данных
-                    </button>
-                    {' '}и принимаю условия{' '}
+                    Я ознакомлен(а) и согласен(на) с{' '}
                     <button
                       type="button"
                       onClick={() => setOfferOpen(true)}
                       className="underline decoration-[#8C7E6F]/50 underline-offset-2 hover:text-card-brown transition-colors text-left"
                     >
-                      Публичной оферты
+                      Публичной офертой
                     </button>
+                    {' '}и{' '}
+                    <button
+                      type="button"
+                      onClick={() => setPolicyOpen(true)}
+                      className="underline decoration-[#8C7E6F]/50 underline-offset-2 hover:text-card-brown transition-colors text-left"
+                    >
+                      Политикой обработки персональных данных
+                    </button>
+                    . Даю согласие на обработку персональных данных.
                   </span>
                 </label>
               </div>

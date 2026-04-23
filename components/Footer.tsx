@@ -6,13 +6,13 @@ import BrandLogo from './BrandLogo'
 import PrivacyPolicyModal from './PrivacyPolicyModal'
 import UserAgreementModal from './UserAgreementModal'
 import PublicOfferModal from './PublicOfferModal'
-import { SELLER_REQUISITES_TEXT } from '@/lib/legalTexts'
+import CompanyRequisitesModal from './CompanyRequisitesModal'
 
 export default function Footer() {
   const [isPolicyOpen, setIsPolicyOpen] = useState(false)
   const [isTermsOpen, setIsTermsOpen] = useState(false)
   const [isOfferOpen, setIsOfferOpen] = useState(false)
-  const [requisitesOpen, setRequisitesOpen] = useState(false)
+  const [isCompanyCardOpen, setIsCompanyCardOpen] = useState(false)
 
   return (
     <motion.footer
@@ -31,26 +31,9 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="flex flex-col items-center md:items-start gap-3"
+            className="flex items-end justify-center md:justify-start gap-4"
           >
-            <div className="flex items-end justify-center md:justify-start gap-4">
-              <BrandLogo size="footer" variant="onDark" href="/" />
-            </div>
-            <div className="w-full max-w-md text-center md:text-left">
-              <button
-                type="button"
-                onClick={() => setRequisitesOpen((o) => !o)}
-                className="text-[13px] text-soft-white/55 hover:text-soft-white/80 underline decoration-soft-white/30 underline-offset-2 transition-colors"
-                aria-expanded={requisitesOpen}
-              >
-                Реквизиты
-              </button>
-              {requisitesOpen && (
-                <p className="mt-2 text-[13px] leading-relaxed text-soft-white/55 whitespace-pre-line text-left">
-                  {SELLER_REQUISITES_TEXT}
-                </p>
-              )}
-            </div>
+            <BrandLogo size="footer" variant="onDark" href="/" />
           </motion.div>
 
           {/* Right: socials + subscribe (desktop in one row) */}
@@ -116,15 +99,7 @@ export default function Footer() {
               onClick={() => setIsPolicyOpen(true)}
               className="underline decoration-soft-white/40 underline-offset-2 hover:text-soft-white transition-colors"
             >
-              Политика конфиденциальности
-            </button>
-            {' '}•{' '}
-            <button
-              type="button"
-              onClick={() => setIsTermsOpen(true)}
-              className="underline decoration-soft-white/40 underline-offset-2 hover:text-soft-white transition-colors"
-            >
-              Условия
+              Политика обработки персональных данных
             </button>
             {' '}•{' '}
             <button
@@ -134,6 +109,22 @@ export default function Footer() {
             >
               Оферта
             </button>
+            {' '}•{' '}
+            <button
+              type="button"
+              onClick={() => setIsCompanyCardOpen(true)}
+              className="underline decoration-soft-white/40 underline-offset-2 hover:text-soft-white transition-colors"
+            >
+              Реквизиты
+            </button>
+            {' '}•{' '}
+            <button
+              type="button"
+              onClick={() => setIsTermsOpen(true)}
+              className="underline decoration-soft-white/40 underline-offset-2 hover:text-soft-white transition-colors"
+            >
+              Условия
+            </button>
           </p>
         </div>
       </div>
@@ -141,6 +132,7 @@ export default function Footer() {
       <PrivacyPolicyModal open={isPolicyOpen} onClose={() => setIsPolicyOpen(false)} />
       <UserAgreementModal open={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
       <PublicOfferModal open={isOfferOpen} onClose={() => setIsOfferOpen(false)} />
+      <CompanyRequisitesModal open={isCompanyCardOpen} onClose={() => setIsCompanyCardOpen(false)} />
     </motion.footer>
   )
 }
