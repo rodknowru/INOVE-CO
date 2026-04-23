@@ -17,7 +17,7 @@ export default function CartDrawer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[90] bg-card-brown/20 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-card-brown/20 backdrop-blur-sm"
             onClick={closeCart}
             aria-hidden="true"
           />
@@ -26,7 +26,7 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed top-0 right-0 bottom-0 w-full md:max-w-md bg-soft-white shadow-2xl z-[91] flex flex-col"
+            className="fixed top-0 right-0 bottom-0 w-full md:max-w-md bg-soft-white shadow-2xl z-[51] flex flex-col"
           >
             <div className="p-4 md:p-6 border-b border-charcoal/10 flex items-center justify-between shrink-0 min-h-[56px]">
               <h2 className="font-serif text-xl md:text-[28px] font-semibold text-card-brown">Корзина</h2>

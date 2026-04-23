@@ -15,7 +15,7 @@ const navItems = [
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { openCart, totalCount } = useCart()
+  const { openCart, totalCount, isOpen: isCartOpen } = useCart()
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 100)
@@ -35,7 +35,7 @@ export default function Navigation() {
     <>
       {/* Не motion.header: transform на sticky-элементе ломает position:sticky на мобильных */}
       <header
-        className={`sticky top-0 z-[100] flex items-center px-4 sm:px-6 md:px-12 min-h-[64px] md:min-h-[86px] py-2 transition-all duration-300 max-md:bg-warm-cream/95 max-md:backdrop-blur-md max-md:border-b max-md:border-charcoal/10 ${
+        className={`sticky top-0 ${isCartOpen ? 'z-30' : 'z-40'} flex items-center px-4 sm:px-6 md:px-12 min-h-[64px] md:min-h-[86px] py-2 transition-all duration-300 max-md:bg-warm-cream/95 max-md:backdrop-blur-md max-md:border-b max-md:border-charcoal/10 ${
           isScrolled ? 'md:bg-warm-cream/90 md:backdrop-blur-md md:shadow-sm' : 'md:bg-transparent md:backdrop-blur-none'
         }`}
       >
@@ -104,7 +104,7 @@ export default function Navigation() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-warm-cream z-[110] flex flex-col items-center justify-center gap-8 md:hidden"
+            className={`fixed inset-0 bg-warm-cream ${isCartOpen ? 'z-30' : 'z-40'} flex flex-col items-center justify-center gap-8 md:hidden`}
           >
             <button
               aria-label="Закрыть меню"
