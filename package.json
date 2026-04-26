@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "products:bootstrap": "node scripts/bootstrap-product-folders.mjs",
-    "products:extract-docx": "node scripts/extract-product-docx.mjs"
+    "products:extract-docx": "node scripts/extract-product-docx.mjs",
+    "products:normalize-photos": "node scripts/normalize-product-photos.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",
