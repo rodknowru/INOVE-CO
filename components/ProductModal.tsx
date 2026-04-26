@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import type { Product } from './ProductGrid'
+import type { Product } from '@/lib/product'
 import { useCart } from '@/lib/CartContext'
 
 type ProductModalProps = {

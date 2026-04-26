@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useCart } from '@/lib/CartContext'
-import type { Product } from './ProductGrid'
+import type { Product } from '@/lib/product'
 import { productCardBlurb } from '@/lib/productCardBlurb'
 
 type ProductCardProps = {
