@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useCart } from '@/lib/CartContext'
 import type { Product } from './ProductGrid'
+import { productCardBlurb } from '@/lib/productCardBlurb'
 
 type ProductCardProps = {
   product: Product
@@ -14,6 +15,8 @@ type ProductCardProps = {
 export default function ProductCard({ product, index, onOpenModal }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1)
   const [addedFeedback, setAddedFeedback] = useState(false)
+  const [currentImg, setCurrentImg] = useState(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const { addToCart } = useCart()
 
   const handleAddToCart = () => {
@@ -21,7 +24,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
       {
         id: product.id,
         name: product.name,
-        image: product.image,
+        image: product.images[0],
         price: product.price,
         priceNum: product.priceNum,
       },
@@ -33,6 +36,29 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
 
   const clampQty = (v: number) => Math.min(99, Math.max(1, v))
   const firstScreen = index < 4
+
+  const handleMouseEnter = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    intervalRef.current = setInterval(() => {
+      setCurrentImg((prev) => (prev === 0 ? 1 : 0))
+    }, 2000)
+  }
+
+  const handleMouseLeave = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+    setCurrentImg(0)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [])
+
+  const [a, b] = product.images
 
   return (
     <motion.article
@@ -47,21 +73,29 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
       <div
         className="aspect-square relative overflow-hidden cursor-pointer shrink-0"
         onClick={() => onOpenModal(product)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <motion.div
-          className="absolute inset-0"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.4 }}
-        >
-          {/* Обычный img: надёжнее на части хостингов/мобильных, чем next/image для локальных файлов */}
+        <div className="absolute inset-0">
           <img
-            src={product.image}
+            src={a}
             alt={product.name}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
+            style={{ opacity: currentImg === 0 ? 1 : 0 }}
             loading={firstScreen ? 'eager' : 'lazy'}
             decoding="async"
+            aria-hidden={currentImg !== 0}
           />
-        </motion.div>
+          <img
+            src={b}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
+            style={{ opacity: currentImg === 1 ? 1 : 0 }}
+            loading={firstScreen ? 'eager' : 'lazy'}
+            decoding="async"
+            aria-hidden={currentImg !== 1}
+          />
+        </div>
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -75,7 +109,6 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
         )}
       </div>
 
-      {/* flex-1 + mt-auto у кнопок: в ряду сетки все карточки одной высоты, кнопки всегда внизу */}
       <div className="p-5 flex flex-col flex-1 min-h-0">
         <h3
           className="font-serif font-semibold text-card-brown text-lg md:text-[24px] cursor-pointer hover:text-accent-gold transition-colors"
@@ -83,7 +116,9 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
         >
           {product.name}
         </h3>
-        <p className="mt-1 font-sans text-sm md:text-[17px] text-charcoal font-light">{product.description}</p>
+        <p className="mt-1 font-sans text-sm md:text-[17px] text-charcoal font-light">
+          {productCardBlurb(product.description)}
+        </p>
         <p className="mt-3 font-serif text-2xl md:text-[32px] font-semibold text-card-brown">{product.price}</p>
 
         <div className="mt-auto pt-4 flex items-center gap-3 flex-wrap">

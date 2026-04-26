@@ -5,15 +5,14 @@ import { motion } from 'framer-motion'
 import ProductCard from './ProductCard'
 import ProductModal from './ProductModal'
 
+/** Два фото в подпапке public/images/products/<название>/photo-1.jpg, photo-2.jpg; текст — из description.docx (см. scripts/) */
 export type Product = {
   id: string
   name: string
   description: string
+  images: [string, string]
   price: string
   priceNum: number
-  image: string
-  fullDescription?: string
-  volume?: string
   tag?: 'Бестселлер' | 'Новинка' | 'Премиум'
 }
 
@@ -21,57 +20,75 @@ const products: Product[] = [
   {
     id: '1',
     name: 'Шампунь для окрашенных волос INOVE-CO',
-    description: 'Мягкое очищение и поддержка цвета для окрашенных волос.',
-    fullDescription: 'Мягкое очищение и поддержка цвета для окрашенных волос.',
+    description:
+      'Мягкое очищение без пересушивания. Подходит для окрашенных волос: помогает сохранить насыщенность оттенка и блеск.\n\nПрименение: нанесите на влажные волосы, вспеньте, смойте тёплой водой. При необходимости повторите.',
+    images: [
+      '/images/products/Шампунь для окрашенных волос INOVE-CO/photo-1.jpg',
+      '/images/products/Шампунь для окрашенных волос INOVE-CO/photo-2.jpg',
+    ],
     price: '1 800 ₽',
     priceNum: 1800,
-    image: '/images/products/shampoo-colored.jpg',
     tag: 'Бестселлер',
   },
   {
     id: '2',
     name: 'Шампунь для тонких волос INOVE-CO',
-    description: 'Бережно очищает и придаёт объём тонким волосам.',
-    fullDescription: 'Бережно очищает и придаёт объём тонким волосам.',
+    description:
+      'Бережно очищает кожу головы и длину волос. Лёгкая формула не создаёт эффекта утяжеления и придаёт ощущение объёма у корней.\n\nПрименение: нанесите на влажные волосы, вспеньте, смойте тёплой водой.',
+    images: [
+      '/images/products/Шампунь для тонких волос INOVE-CO/photo-1.jpg',
+      '/images/products/Шампунь для тонких волос INOVE-CO/photo-2.jpg',
+    ],
     price: '1 800 ₽',
     priceNum: 1800,
-    image: '/images/products/shampoo-thin.jpg',
   },
   {
     id: '3',
     name: 'Кондиционер для окрашенных волос INOVE-CO',
-    description: 'Увлажняет и разглаживает, продлевает яркость окрашивания.',
-    fullDescription: 'Увлажняет и разглаживает, продлевает яркость окрашивания.',
+    description:
+      'Увлажняет и облегчает расчёсывание. Подходит для окрашенных волос: помогает сохранить мягкость и сияние.\n\nПрименение: после шампуня распределите по длине, оставьте на 2–3 минуты, смойте.',
+    images: [
+      '/images/products/Кондиционер для окрашенных волос INOVE-CO/photo-1.jpg',
+      '/images/products/Кондиционер для окрашенных волос INOVE-CO/photo-2.jpg',
+    ],
     price: '1 900 ₽',
     priceNum: 1900,
-    image: '/images/products/conditioner-colored.jpg',
   },
   {
     id: '4',
     name: 'Кондиционер для тонких волос INOVE-CO',
-    description: 'Лёгкий уход без утяжеления: мягкость и послушность тонких волос.',
-    fullDescription: 'Лёгкий уход без утяжеления: мягкость и послушность тонких волос.',
+    description:
+      'Лёгкий кондиционер без эффекта утяжеления. Делает тонкие волосы более послушными и ухоженными.\n\nПрименение: после шампуня распределите по длине, оставьте на 2–3 минуты, смойте.',
+    images: [
+      '/images/products/Кондиционер для тонких волос INOVE-CO/photo-1.jpg',
+      '/images/products/Кондиционер для тонких волос INOVE-CO/photo-2.jpg',
+    ],
     price: '1 900 ₽',
     priceNum: 1900,
-    image: '/images/products/conditioner-thin.jpg',
   },
   {
     id: '5',
     name: 'Маска для окрашенных волос INOVE-CO',
-    description: 'Интенсивный уход и блеск для окрашенных волос.',
-    fullDescription: 'Интенсивный уход и блеск для окрашенных волос.',
+    description:
+      'Интенсивный уход для окрашенных волос: питает и помогает поддерживать блеск, волосы выглядят более ухоженными.\n\nПрименение: 1–2 раза в неделю после шампуня, выдержите 5–10 минут, смойте.',
+    images: [
+      '/images/products/Маска для окрашенных волос INOVE-CO/photo-1.jpg',
+      '/images/products/Маска для окрашенных волос INOVE-CO/photo-2.jpg',
+    ],
     price: '2 100 ₽',
     priceNum: 2100,
-    image: '/images/products/mask-colored.jpg',
   },
   {
     id: '6',
     name: 'Маска для тонких волос INOVE-CO',
-    description: 'Питательная маска: укрепление и объём без тяжести.',
-    fullDescription: 'Питательная маска: укрепление и объём без тяжести.',
+    description:
+      'Питательная маска для тонких волос: насыщает без тяжести, помогает сохранить объём и мягкость.\n\nПрименение: 1–2 раза в неделю, выдержите 5–10 минут, смойте тщательно.',
+    images: [
+      '/images/products/Маска для тонких волос INOVE-CO/photo-1.jpg',
+      '/images/products/Маска для тонких волос INOVE-CO/photo-2.jpg',
+    ],
     price: '2 100 ₽',
     priceNum: 2100,
-    image: '/images/products/mask-thin.jpg',
     tag: 'Новинка',
   },
 ]

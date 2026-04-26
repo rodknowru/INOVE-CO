@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "products:bootstrap": "node scripts/bootstrap-product-folders.mjs",
+    "products:extract-docx": "node scripts/extract-product-docx.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",
