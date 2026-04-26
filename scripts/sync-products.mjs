@@ -12,6 +12,9 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.join(__dirname, '..')
 const productsRoot = path.join(root, 'public', 'images', 'products')
+/** Исходники: полные .docx и фото до публикации в public */
+const productsSourceRoot = path.join(root, 'products')
+const extractDocxScript = path.join(__dirname, 'extract-docx-text.py')
 const outFile = path.join(root, 'lib', 'productsCatalog.ts')
 
 const ORDER = [
@@ -59,7 +62,7 @@ function decodeXmlEntities(s) {
     .replace(/&#39;/g, "'")
 }
 
-function extractDocxText(docxPath) {
+function extractDocxTextZip(docxPath) {
   const xml = execSync(`unzip -p ${JSON.stringify(docxPath)} word/document.xml`, {
     encoding: 'utf8',
     maxBuffer: 20 * 1024 * 1024,
@@ -68,6 +71,87 @@ function extractDocxText(docxPath) {
     xml.replace(/<w:tab\/>/g, '\t').replace(/<\/w:p>/g, '\n').replace(/<[^>]+>/g, '')
   )
   return text.replace(/\n{3,}/g, '\n\n').trim()
+}
+
+/** Полный текст через python-docx (абзацы + таблицы) */
+function extractDocxText(docxPath) {
+  try {
+    return execSync(`python3 ${JSON.stringify(extractDocxScript)} ${JSON.stringify(docxPath)}`, {
+      encoding: 'utf8',
+      maxBuffer: 50 * 1024 * 1024,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    }).trim()
+  } catch {
+    try {
+      return extractDocxTextZip(docxPath)
+    } catch {
+      return ''
+    }
+  }
+}
+
+function findDirByNfcName(parent, targetName) {
+  if (!fs.existsSync(parent)) return null
+  const want = targetName.normalize('NFC')
+  const name = fs
+    .readdirSync(parent)
+    .find((d) => d !== '.DS_Store' && d.normalize('NFC') === want)
+  return name ? path.join(parent, name) : null
+}
+
+/** Копирует description.docx из products/<папка>/ (имена с разной формой «й» совпадают по NFC) */
+function syncDescriptionDocxFromProducts(sub, folder) {
+  const srcDir = findDirByNfcName(productsSourceRoot, folder)
+  if (!srcDir) return false
+  const docxs = fs
+    .readdirSync(srcDir)
+    .filter((f) => f.toLowerCase().endsWith('.docx'))
+    .sort((a, b) => a.localeCompare(b, 'ru'))
+  if (docxs.length === 0) return false
+  fs.copyFileSync(path.join(srcDir, docxs[0]), path.join(sub, 'description.docx'))
+  return true
+}
+
+/** Убираем старые photo-1/2, чтобы не осталось двойников (.jpg от заглушек + .png от зеркала). */
+function removeExistingPhoto12(sub) {
+  if (!fs.existsSync(sub)) return
+  for (const f of fs.readdirSync(sub)) {
+    if (/^photo-[12]\./i.test(f)) fs.unlinkSync(path.join(sub, f))
+  }
+}
+
+/** Два первых изображения из products/ → photo-1 / photo-2 в public */
+function syncPhotosFromProductsMirror(sub, folder) {
+  const srcDir = findDirByNfcName(productsSourceRoot, folder)
+  if (!srcDir) return
+
+  removeExistingPhoto12(sub)
+
+  const hero = path.join(root, 'public', 'images', 'hero', 'hero-face.jpg')
+  const j2 = path.join(root, 'public', 'images', 'journal', '02-journal.jpg')
+
+  const imgs = fs
+    .readdirSync(srcDir)
+    .filter((f) => /\.(jpe?g|png|webp)$/i.test(f))
+    .sort((a, b) => a.localeCompare(b, 'ru'))
+
+  if (imgs.length === 0) return
+
+  const ext0 = path.extname(imgs[0]) || '.jpg'
+  const dest0 = path.join(sub, `photo-1${ext0}`)
+  fs.copyFileSync(path.join(srcDir, imgs[0]), dest0)
+
+  if (imgs.length >= 2) {
+    const ext1 = path.extname(imgs[1]) || '.jpg'
+    const dest1 = path.join(sub, `photo-2${ext1}`)
+    fs.copyFileSync(path.join(srcDir, imgs[1]), dest1)
+  } else if (fs.existsSync(j2)) {
+    const ext1 = path.extname(j2)
+    fs.copyFileSync(j2, path.join(sub, `photo-2${ext1}`))
+  } else if (fs.existsSync(hero)) {
+    const ext1 = path.extname(hero)
+    fs.copyFileSync(hero, path.join(sub, `photo-2${ext1}`))
+  }
 }
 
 function displayName(folder) {
@@ -173,7 +257,12 @@ function prepareProductFolders() {
     const sub = path.join(productsRoot, folder)
     fs.mkdirSync(sub, { recursive: true })
     try {
-      ensureDocx(sub, folder)
+      syncPhotosFromProductsMirror(sub, folder)
+    } catch (e) {
+      console.warn('sync photos from products/:', folder, e.message)
+    }
+    try {
+      if (!syncDescriptionDocxFromProducts(sub, folder)) ensureDocx(sub, folder)
     } catch (e) {
       console.warn('textutil/docx:', folder, e.message)
     }
@@ -201,17 +290,28 @@ function main() {
   for (const folder of ORDER) {
     const sub = path.join(productsRoot, folder)
     let description = FALLBACK_DESC[folder] || ''
+    const tryPaths = []
+    const srcDir = findDirByNfcName(productsSourceRoot, folder)
+    if (srcDir) {
+      const srcDocx = fs
+        .readdirSync(srcDir)
+        .filter((f) => f.toLowerCase().endsWith('.docx'))
+        .sort((a, b) => a.localeCompare(b, 'ru'))
+      if (srcDocx[0]) tryPaths.push(path.join(srcDir, srcDocx[0]))
+    }
     if (fs.existsSync(sub)) {
-      const docx = fs.readdirSync(sub).find((f) => f.toLowerCase().endsWith('.docx'))
-      if (docx) {
-        try {
-          const t = extractDocxText(path.join(sub, docx))
-          if (t.length > 0) description = t
-        } catch (e) {
-          console.warn('Не прочитан .docx:', folder, e.message)
-        }
+      const docxName = fs.readdirSync(sub).find((f) => f.toLowerCase().endsWith('.docx'))
+      if (docxName) tryPaths.push(path.join(sub, docxName))
+    }
+    for (const docxPath of tryPaths) {
+      try {
+        const t = extractDocxText(docxPath)
+        if (t.length > description.length) description = t
+      } catch (e) {
+        console.warn('Не прочитан .docx:', docxPath, e.message)
       }
     }
+    description = description.trim()
 
     let [p1, p2] = findPhotoPair(sub)
     if (!p1) p1 = 'photo-1.jpg'

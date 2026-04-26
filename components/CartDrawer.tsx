@@ -49,7 +49,7 @@ export default function CartDrawer() {
                     <li key={item.id} className="flex gap-4 pb-4 md:pb-6 border-b border-charcoal/10 last:border-0">
                       <div className="relative w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-lg overflow-hidden bg-warm-cream">
                         <img
-                          src={item.image}
+                          src={encodeURI(item.image)}
                           alt={item.name}
                           className="h-full w-full object-cover"
                           loading="lazy"

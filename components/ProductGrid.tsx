@@ -5,7 +5,10 @@ import { motion } from 'framer-motion'
 import ProductCard from './ProductCard'
 import ProductModal from './ProductModal'
 import type { Product } from '@/lib/product'
-/** Массив товаров: `npm run products:sync` (папки + .docx + photo-1/2 → lib/productsCatalog.ts) */
+/**
+ * Каталог на сайте берётся из `lib/productsCatalog.ts`.
+ * Полные описания из `products/*.docx` и фото — команда: `npm run products:sync`
+ */
 import { products } from '@/lib/productsCatalog'
 
 export type { Product }

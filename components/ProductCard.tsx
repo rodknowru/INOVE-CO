@@ -77,7 +77,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
       >
         <div className="absolute inset-0">
           <img
-            src={a}
+            src={encodeURI(a)}
             alt={product.name}
             className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
             style={{ opacity: currentImg === 0 ? 1 : 0 }}
@@ -86,7 +86,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
             aria-hidden={currentImg !== 0}
           />
           <img
-            src={b}
+            src={encodeURI(b)}
             alt=""
             className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
             style={{ opacity: currentImg === 1 ? 1 : 0 }}

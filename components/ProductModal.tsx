@@ -107,7 +107,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                 {product.images.map((src, i) => (
                   <img
                     key={src}
-                    src={src}
+                    src={encodeURI(src)}
                     alt={i === 0 ? product.name : ''}
                     className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-in-out"
                     style={{ opacity: slide === i ? 1 : 0 }}
