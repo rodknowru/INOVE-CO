@@ -5,11 +5,10 @@ import { motion } from 'framer-motion'
 import ProductCard from './ProductCard'
 import ProductModal from './ProductModal'
 import type { Product } from '@/lib/product'
+/** Массив товаров: `npm run products:sync` (папки + .docx + photo-1/2 → lib/productsCatalog.ts) */
 import { products } from '@/lib/productsCatalog'
 
 export type { Product }
-
-export { productCardBlurb } from '@/lib/productCardBlurb'
 
 export default function ProductGrid() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)

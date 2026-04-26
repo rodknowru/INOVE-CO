@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useCart } from '@/lib/CartContext'
 import type { Product } from '@/lib/product'
-import { productCardBlurb } from '@/lib/productCardBlurb'
 
 type ProductCardProps = {
   product: Product
@@ -117,7 +116,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
           {product.name}
         </h3>
         <p className="mt-1 font-sans text-sm md:text-[17px] text-charcoal font-light">
-          {productCardBlurb(product.description)}
+          {product.subtitle}
         </p>
         <p className="mt-3 font-serif text-2xl md:text-[32px] font-semibold text-card-brown">{product.price}</p>
 
