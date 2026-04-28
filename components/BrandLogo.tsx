@@ -10,7 +10,7 @@ type BrandLogoProps = {
 }
 
 const sizeClass = {
-  nav: 'h-[50px] md:h-[70px]',
+  nav: 'h-[70px]',
   checkout: 'h-[70px] md:h-[80px]',
   footer: 'h-[90px]',
 } as const
@@ -28,7 +28,7 @@ export default function BrandLogo({
       src="/images/logo/inoveco_transparent.png?v=3"
       alt="INOVECO"
       decoding="async"
-      className={`${sizeClass[size]} w-auto object-contain ${onDark ? 'invert' : ''}`}
+      className={`${sizeClass[size]} w-auto object-contain block ${onDark ? 'invert' : ''}`}
     />
   )
 
