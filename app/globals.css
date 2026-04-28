@@ -4,12 +4,12 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   @apply bg-warm-cream text-dark-brown antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Leaflet PVZ popup — палитра сайта */
