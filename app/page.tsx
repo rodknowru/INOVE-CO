@@ -15,6 +15,7 @@ export default function Home() {
       <main className="min-h-screen">
         <CustomCursor />
         <TopBar />
+        <div className="h-[80px]" />
         <Navigation />
         <Hero />
         <ProductGrid />

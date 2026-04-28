@@ -35,7 +35,7 @@ export default function Navigation() {
     <>
       {/* Не motion.header: transform на sticky-элементе ломает position:sticky на мобильных */}
       <header
-        className={`sticky top-0 z-50 flex items-center px-4 sm:px-6 md:px-12 min-h-[64px] md:min-h-[86px] py-2 transition-all duration-300 max-md:bg-warm-cream/95 max-md:backdrop-blur-md max-md:border-b max-md:border-charcoal/10 ${
+        className={`fixed top-0 left-0 right-0 w-full z-50 flex items-center px-4 sm:px-6 md:px-12 min-h-[64px] md:min-h-[86px] py-2 transition-all duration-300 max-md:bg-warm-cream/95 max-md:backdrop-blur-md max-md:border-b max-md:border-charcoal/10 ${
           isScrolled ? 'md:bg-warm-cream/90 md:backdrop-blur-md md:shadow-sm' : 'md:bg-transparent md:backdrop-blur-none'
         } w-full bg-[#F5F0EB]`}
       >
