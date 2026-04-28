@@ -18,18 +18,29 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const clampQty = (v: number) => Math.min(99, Math.max(1, v))
 
   useEffect(() => {
+    const isOpen = Boolean(product)
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
-    if (product) {
+    if (isOpen) {
       document.addEventListener('keydown', handleEscape)
-      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${window.scrollY}px`
+      document.body.style.width = '100%'
       setSlide(0)
       setQuantity(1)
+    } else {
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
     }
     return () => {
       document.removeEventListener('keydown', handleEscape)
-      document.body.style.overflow = 'unset'
+      const scrollY = document.body.style.top
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      window.scrollTo(0, parseInt(scrollY || '0') * -1)
     }
   }, [product, onClose])
 

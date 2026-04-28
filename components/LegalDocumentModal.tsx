@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 type Props = {
@@ -22,6 +23,28 @@ export default function LegalDocumentModal({
   footerActions = 'legal',
 }: Props) {
   if (!open) return null
+
+  // Блокировка прокрутки фона, пока открыта модалка
+  useEffect(() => {
+    if (!open) {
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      return
+    }
+
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${window.scrollY}px`
+    document.body.style.width = '100%'
+
+    return () => {
+      const scrollY = document.body.style.top
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      window.scrollTo(0, parseInt(scrollY || '0') * -1)
+    }
+  }, [open])
 
   return (
     <motion.div

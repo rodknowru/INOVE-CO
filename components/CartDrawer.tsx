@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/lib/CartContext'
@@ -8,6 +9,28 @@ import { formatRubles } from '@/lib/formatRubles'
 export default function CartDrawer() {
   const router = useRouter()
   const { items, isOpen, closeCart, updateQuantity, removeItem, totalSum } = useCart()
+
+  // Блокировка прокрутки фона, пока открыта корзина
+  useEffect(() => {
+    if (!isOpen) {
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      return
+    }
+
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${window.scrollY}px`
+    document.body.style.width = '100%'
+
+    return () => {
+      const scrollY = document.body.style.top
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      window.scrollTo(0, parseInt(scrollY || '0') * -1)
+    }
+  }, [isOpen])
 
   return (
     <AnimatePresence>
