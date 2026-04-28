@@ -24,23 +24,15 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
     }
     if (isOpen) {
       document.addEventListener('keydown', handleEscape)
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${window.scrollY}px`
-      document.body.style.width = '100%'
+      document.body.style.overflow = 'hidden'
       setSlide(0)
       setQuantity(1)
     } else {
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
+      document.body.style.overflow = ''
     }
     return () => {
       document.removeEventListener('keydown', handleEscape)
-      const scrollY = document.body.style.top
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-      window.scrollTo(0, parseInt(scrollY || '0') * -1)
+      document.body.style.overflow = ''
     }
   }, [product, onClose])
 

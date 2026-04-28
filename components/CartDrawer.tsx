@@ -1,34 +1,23 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/lib/CartContext'
 import { formatRubles } from '@/lib/formatRubles'
 
 export default function CartDrawer() {
-  const router = useRouter()
   const { items, isOpen, closeCart, updateQuantity, removeItem, totalSum } = useCart()
 
   // Блокировка прокрутки фона, пока открыта корзина
   useEffect(() => {
-    if (!isOpen) {
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-      return
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
     }
-
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${window.scrollY}px`
-    document.body.style.width = '100%'
-
     return () => {
-      const scrollY = document.body.style.top
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-      window.scrollTo(0, parseInt(scrollY || '0') * -1)
+      document.body.style.overflow = ''
     }
   }, [isOpen])
 
@@ -122,16 +111,13 @@ export default function CartDrawer() {
                 <p className="font-sans text-charcoal text-sm md:text-[15px] mb-3">
                   Итого: <span className="font-serif font-semibold text-card-brown text-lg md:text-[34px]">{formatRubles(totalSum)}</span>
                 </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    router.push('/checkout')
-                    closeCart()
-                  }}
+                <Link
+                  href="/checkout"
+                  onClick={closeCart}
                   className="w-full min-h-[48px] py-4 bg-card-brown text-soft-white font-sans font-medium uppercase tracking-wider md:text-[18px] hover:bg-accent-gold transition-colors rounded-xl text-center flex items-center justify-center"
                 >
                   Оформить заказ
-                </button>
+                </Link>
               </div>
             )}
           </motion.aside>

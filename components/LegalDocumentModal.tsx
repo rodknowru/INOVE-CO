@@ -26,23 +26,13 @@ export default function LegalDocumentModal({
 
   // Блокировка прокрутки фона, пока открыта модалка
   useEffect(() => {
-    if (!open) {
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-      return
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
     }
-
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${window.scrollY}px`
-    document.body.style.width = '100%'
-
     return () => {
-      const scrollY = document.body.style.top
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-      window.scrollTo(0, parseInt(scrollY || '0') * -1)
+      document.body.style.overflow = ''
     }
   }, [open])
 
@@ -97,7 +87,7 @@ export default function LegalDocumentModal({
               <button
                 type="button"
                 onClick={() => {
-                  window.location.href = 'https://google.com'
+                  window.open('https://google.com', '_blank', 'noopener,noreferrer')
                 }}
                 className="w-1/2 min-h-[48px] rounded-[8px] border border-[#D5CBBD] bg-transparent text-[#8C7E6F] font-sans text-sm font-medium transition-colors hover:bg-[#F5F0EB]"
               >

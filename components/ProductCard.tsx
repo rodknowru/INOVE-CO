@@ -68,7 +68,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
   const [a, b] = product.images
 
   return (
-    <motion.article
+    <motion.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
@@ -76,10 +76,11 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
       className="group bg-soft-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col h-full min-h-0"
       data-product-card
+      onClick={handleClick}
+      style={{ cursor: 'pointer' }}
     >
       <div
         className="aspect-square relative overflow-hidden cursor-pointer shrink-0"
-        onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -117,10 +118,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
       </div>
 
       <div className="p-5 flex flex-col flex-1 min-h-0">
-        <h3
-          className="font-serif font-semibold text-card-brown text-lg md:text-[24px] cursor-pointer hover:text-accent-gold transition-colors"
-          onClick={handleClick}
-        >
+        <h3 className="font-serif font-semibold text-card-brown text-lg md:text-[24px] cursor-pointer hover:text-accent-gold transition-colors">
           {product.name}
         </h3>
         <p className="mt-1 font-sans text-sm md:text-[17px] text-charcoal font-light">
@@ -161,6 +159,6 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
           </button>
         </div>
       </div>
-    </motion.article>
+    </motion.div>
   )
 }
