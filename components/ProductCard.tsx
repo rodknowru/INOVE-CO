@@ -18,13 +18,15 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const { addToCart } = useCart()
 
-  const handleCardClick = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     onOpenModal(product)
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     addToCart(
       {
         id: product.id,
@@ -77,7 +79,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
     >
       <div
         className="aspect-square relative overflow-hidden cursor-pointer shrink-0"
-        onClick={handleCardClick}
+        onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -117,7 +119,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
       <div className="p-5 flex flex-col flex-1 min-h-0">
         <h3
           className="font-serif font-semibold text-card-brown text-lg md:text-[24px] cursor-pointer hover:text-accent-gold transition-colors"
-          onClick={handleCardClick}
+          onClick={handleClick}
         >
           {product.name}
         </h3>
@@ -148,10 +150,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
           </div>
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              handleAddToCart()
-            }}
+            onClick={handleAddToCart}
             className={`flex-1 min-w-[140px] min-h-[48px] py-2.5 px-4 rounded-lg font-sans text-sm md:text-[17px] font-medium uppercase tracking-wider transition-all duration-300 ${
               addedFeedback
                 ? 'bg-success-green text-soft-white'
