@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 1) Готовит public/images/products: папки, .docx из запасного текста (если нет ни одного .docx),
- *    переименовывает два первых фото → photo-1.* / photo-2.*
+ *    синхронизирует фото 1.* / 2.* из products/
  * 2) Пишет lib/productsCatalog.ts (npm run products:sync)
  */
 import fs from 'fs'
@@ -112,46 +112,31 @@ function syncDescriptionDocxFromProducts(sub, folder) {
   return true
 }
 
-/** Убираем старые photo-1/2, чтобы не осталось двойников (.jpg от заглушек + .png от зеркала). */
-function removeExistingPhoto12(sub) {
+/** Убираем старые 1/2 (и legacy photo-1/2), чтобы не осталось двойников. */
+function removeExistingImage12(sub) {
   if (!fs.existsSync(sub)) return
   for (const f of fs.readdirSync(sub)) {
-    if (/^photo-[12]\./i.test(f)) fs.unlinkSync(path.join(sub, f))
+    if (/^(photo-[12]|[12])\./i.test(f)) fs.unlinkSync(path.join(sub, f))
   }
 }
 
-/** Два первых изображения из products/ → photo-1 / photo-2 в public */
+/** 1.* и 2.* из products/ → 1.* и 2.* в public */
 function syncPhotosFromProductsMirror(sub, folder) {
   const srcDir = findDirByNfcName(productsSourceRoot, folder)
   if (!srcDir) return
 
-  removeExistingPhoto12(sub)
+  removeExistingImage12(sub)
 
-  const hero = path.join(root, 'public', 'images', 'hero', 'hero-face.jpg')
-  const j2 = path.join(root, 'public', 'images', 'journal', '02-journal.jpg')
-
-  const imgs = fs
-    .readdirSync(srcDir)
-    .filter((f) => /\.(jpe?g|png|webp)$/i.test(f))
-    .sort((a, b) => a.localeCompare(b, 'ru'))
-
-  if (imgs.length === 0) return
-
-  const ext0 = path.extname(imgs[0]) || '.jpg'
-  const dest0 = path.join(sub, `photo-1${ext0}`)
-  fs.copyFileSync(path.join(srcDir, imgs[0]), dest0)
-
-  if (imgs.length >= 2) {
-    const ext1 = path.extname(imgs[1]) || '.jpg'
-    const dest1 = path.join(sub, `photo-2${ext1}`)
-    fs.copyFileSync(path.join(srcDir, imgs[1]), dest1)
-  } else if (fs.existsSync(j2)) {
-    const ext1 = path.extname(j2)
-    fs.copyFileSync(j2, path.join(sub, `photo-2${ext1}`))
-  } else if (fs.existsSync(hero)) {
-    const ext1 = path.extname(hero)
-    fs.copyFileSync(hero, path.join(sub, `photo-2${ext1}`))
+  const files = fs.readdirSync(srcDir)
+  const one = files.find((f) => /^1\.(jpe?g|png|webp)$/i.test(f))
+  const two = files.find((f) => /^2\.(jpe?g|png|webp)$/i.test(f))
+  if (!one || !two) {
+    console.warn('⚠ Нет 1.* или 2.* в папке:', path.basename(srcDir))
+    return
   }
+
+  fs.copyFileSync(path.join(srcDir, one), path.join(sub, `1${path.extname(one)}`))
+  fs.copyFileSync(path.join(srcDir, two), path.join(sub, `2${path.extname(two)}`))
 }
 
 function displayName(folder) {
@@ -166,6 +151,33 @@ function subtitleFromDescription(desc) {
     .map((l) => l.trim())
     .find((l) => l.length > 0)
   return line || ''
+}
+
+function lightClean(s) {
+  return (s || '')
+    .replace(/\r\n?/g, '\n')
+    // NBSP → обычный пробел (невидимо, но ломает сравнение/переносы)
+    .replace(/\u00A0/g, ' ')
+    // мягкие переносы/нулевая ширина (невидимый мусор)
+    .replace(/[\u00AD\u200B\u200C\u200D\uFEFF]/g, '')
+}
+
+function extractTitleAndDescription(fullText) {
+  const s = lightClean(fullText).trim()
+  if (!s) return { title: '', description: '' }
+
+  const lines = s.split('\n')
+  const title = (lines.find((l) => l.trim().length > 0) || '').trimEnd()
+
+  // всё строго после слова "Описание:"
+  const idx = s.indexOf('Описание:')
+  if (idx === -1) {
+    return { title, description: '' }
+  }
+
+  const after = s.slice(idx + 'Описание:'.length)
+  const description = after.replace(/^\s*\n?/, '').trimEnd()
+  return { title, description }
 }
 
 function priceForFolder(folder) {
@@ -194,63 +206,6 @@ function ensureDocx(sub, folder) {
   fs.unlinkSync(txt)
 }
 
-function renameTwoPhotosToPhoto12(sub) {
-  const files = fs.readdirSync(sub)
-  const p1 = files.find((f) => /^photo-1\.(jpe?g|png|webp)$/i.test(f))
-  const p2 = files.find((f) => /^photo-2\.(jpe?g|png|webp)$/i.test(f))
-  if (p1 && p2) return
-
-  const hero = path.join(root, 'public', 'images', 'hero', 'hero-face.jpg')
-  const j1 = path.join(root, 'public', 'images', 'journal', '01-product.jpeg')
-  const j2 = path.join(root, 'public', 'images', 'journal', '02-journal.jpg')
-
-  let imgs = files
-    .filter((f) => /\.(jpe?g|png|webp)$/i.test(f))
-    .filter((f) => !/^photo-[12]\./i.test(f))
-    .sort((a, b) => a.localeCompare(b, 'ru'))
-
-  if (imgs.length === 0 && fs.existsSync(hero) && fs.existsSync(j1)) {
-    fs.copyFileSync(hero, path.join(sub, '.__seed0.jpg'))
-    fs.copyFileSync(j1, path.join(sub, '.__seed1.jpg'))
-    imgs = fs
-      .readdirSync(sub)
-      .filter((f) => /\.(jpe?g|png|webp)$/i.test(f))
-      .filter((f) => !/^photo-[12]\./i.test(f))
-      .sort((a, b) => a.localeCompare(b, 'ru'))
-  } else if (imgs.length === 1 && fs.existsSync(j2)) {
-    fs.copyFileSync(j2, path.join(sub, '.__seed1.jpg'))
-    imgs = fs
-      .readdirSync(sub)
-      .filter((f) => /\.(jpe?g|png|webp)$/i.test(f))
-      .filter((f) => !/^photo-[12]\./i.test(f))
-      .sort((a, b) => a.localeCompare(b, 'ru'))
-  }
-
-  if (imgs.length < 2) {
-    console.warn('⚠ Мало фото в папке:', path.basename(sub))
-    return
-  }
-
-  const a = imgs[0]
-  const b = imgs[1]
-  const ext1 = path.extname(a)
-  const ext2 = path.extname(b)
-  const tmpA = path.join(sub, `.__mv1${ext1}`)
-  const tmpB = path.join(sub, `.__mv2${ext2}`)
-  fs.renameSync(path.join(sub, a), tmpA)
-  fs.renameSync(path.join(sub, b), tmpB)
-  const destA = path.join(sub, `photo-1${ext1}`)
-  const destB = path.join(sub, `photo-2${ext2}`)
-  if (fs.existsSync(destA)) fs.unlinkSync(destA)
-  if (fs.existsSync(destB)) fs.unlinkSync(destB)
-  fs.renameSync(tmpA, destA)
-  fs.renameSync(tmpB, destB)
-
-  fs.readdirSync(sub).forEach((f) => {
-    if (f.startsWith('.__seed')) fs.unlinkSync(path.join(sub, f))
-  })
-}
-
 function prepareProductFolders() {
   fs.mkdirSync(productsRoot, { recursive: true })
   for (const folder of ORDER) {
@@ -266,19 +221,14 @@ function prepareProductFolders() {
     } catch (e) {
       console.warn('textutil/docx:', folder, e.message)
     }
-    try {
-      renameTwoPhotosToPhoto12(sub)
-    } catch (e) {
-      console.warn('rename photos:', folder, e.message)
-    }
   }
 }
 
-function findPhotoPair(sub) {
+function findImagePair(sub) {
   const files = fs.existsSync(sub) ? fs.readdirSync(sub) : []
-  const p1 = files.find((f) => /^photo-1\.(jpe?g|png|webp)$/i.test(f))
-  const p2 = files.find((f) => /^photo-2\.(jpe?g|png|webp)$/i.test(f))
-  return [p1, p2]
+  const one = files.find((f) => /^1\.(jpe?g|png|webp)$/i.test(f))
+  const two = files.find((f) => /^2\.(jpe?g|png|webp)$/i.test(f))
+  return [one, two]
 }
 
 function main() {
@@ -296,6 +246,7 @@ function main() {
       const srcDocx = fs
         .readdirSync(srcDir)
         .filter((f) => f.toLowerCase().endsWith('.docx'))
+        .filter((f) => !f.startsWith('~$'))
         .sort((a, b) => a.localeCompare(b, 'ru'))
       if (srcDocx[0]) tryPaths.push(path.join(srcDir, srcDocx[0]))
     }
@@ -312,18 +263,30 @@ function main() {
       }
     }
     description = description.trim()
+    const { title, description: cleanDesc } = extractTitleAndDescription(description)
 
-    let [p1, p2] = findPhotoPair(sub)
-    if (!p1) p1 = 'photo-1.jpg'
-    if (!p2) p2 = 'photo-2.jpg'
+    let [img1, img2] = findImagePair(sub)
+    if (!img1) img1 = '1.jpg'
+    if (!img2) img2 = '2.jpg'
 
     const { priceNum, price } = priceForFolder(folder)
     const tag = tagForFolder(folder)
-    const name = displayName(folder)
-    const subtitle = subtitleFromDescription(description)
-    const images = [`/images/products/${folder}/${p1}`, `/images/products/${folder}/${p2}`]
+    const name = title || displayName(folder)
+    const subtitle = displayName(folder)
+    const imageMain = `/images/products/${folder}/${img1}`
+    const imageHover = `/images/products/${folder}/${img2}`
 
-    rows.push({ id: String(id++), name, subtitle, description, images, price, priceNum, tag })
+    rows.push({
+      id: String(id++),
+      name,
+      subtitle,
+      description: cleanDesc,
+      imageMain,
+      imageHover,
+      price,
+      priceNum,
+      tag,
+    })
   }
 
   const chunks = []
@@ -338,7 +301,8 @@ function main() {
     chunks.push(`    name: ${JSON.stringify(r.name)},`)
     chunks.push(`    subtitle: ${JSON.stringify(r.subtitle)},`)
     chunks.push(`    description: ${JSON.stringify(r.description)},`)
-    chunks.push(`    images: [${JSON.stringify(r.images[0])}, ${JSON.stringify(r.images[1])}],`)
+    chunks.push(`    imageMain: ${JSON.stringify(r.imageMain)},`)
+    chunks.push(`    imageHover: ${JSON.stringify(r.imageHover)},`)
     chunks.push(`    price: ${JSON.stringify(r.price)},`)
     chunks.push(`    priceNum: ${r.priceNum},`)
     if (r.tag) chunks.push(`    tag: '${r.tag}',`)

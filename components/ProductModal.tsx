@@ -62,7 +62,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
       {
         id: product.id,
         name: product.name,
-        image: product.images[0],
+        image: product.imageMain,
         price: product.price,
         priceNum: product.priceNum,
       },
@@ -109,12 +109,12 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     className="relative h-[320px] w-full overflow-hidden rounded-[12px] cursor-pointer group/slide focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3C3228]/30"
                     aria-label="Сменить фото"
                   >
-                    {product.images.map((src, i) => (
+                    {[product.imageMain, product.imageHover].map((src, i) => (
                       <img
                         key={src}
                         src={encodeURI(src)}
                         alt={i === 0 ? product.name : ''}
-                        className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-in-out"
+                        className="absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ease-in-out"
                         style={{ opacity: slide === i ? 1 : 0 }}
                         loading="lazy"
                         decoding="async"

@@ -31,6 +31,19 @@ const config: Config = {
       maxWidth: {
         'container': '1440px',
       },
+      keyframes: {
+        // Наведение → ждём 1s → плавно показываем 2.* → держим → скрываем → держим → повторяем
+        productHoverCrossfade: {
+          '0%, 20%': { opacity: '0' },
+          '30%, 50%': { opacity: '1' },
+          '60%, 80%': { opacity: '0' },
+          '100%': { opacity: '0' },
+        },
+      },
+      animation: {
+        // 1s delay + 0.5s fade in + 1.5s hold + 0.5s fade out + 1.5s hold = 5s
+        productHoverCrossfade: 'productHoverCrossfade 5s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useCart } from '@/lib/CartContext'
 import type { Product } from '@/lib/product'
@@ -14,8 +14,6 @@ type ProductCardProps = {
 export default function ProductCard({ product, index, onOpenModal }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1)
   const [addedFeedback, setAddedFeedback] = useState(false)
-  const [currentImg, setCurrentImg] = useState(0)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const { addToCart } = useCart()
 
   const handleClick = (e: React.MouseEvent) => {
@@ -31,7 +29,7 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
       {
         id: product.id,
         name: product.name,
-        image: product.images[0],
+        image: product.imageMain,
         price: product.price,
         priceNum: product.priceNum,
       },
@@ -43,29 +41,6 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
 
   const clampQty = (v: number) => Math.min(99, Math.max(1, v))
   const firstScreen = index < 4
-
-  const handleMouseEnter = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    intervalRef.current = setInterval(() => {
-      setCurrentImg((prev) => (prev === 0 ? 1 : 0))
-    }, 2000)
-  }
-
-  const handleMouseLeave = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
-    }
-    setCurrentImg(0)
-  }
-
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
-    }
-  }, [])
-
-  const [a, b] = product.images
 
   return (
     <motion.div
@@ -80,36 +55,24 @@ export default function ProductCard({ product, index, onOpenModal }: ProductCard
       style={{ cursor: 'pointer' }}
     >
       <div
-        className="aspect-square relative overflow-hidden cursor-pointer shrink-0"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        className="relative w-full aspect-[4/5] overflow-hidden cursor-pointer shrink-0 bg-transparent"
       >
         <div className="absolute inset-0">
           <img
-            src={encodeURI(a)}
+            src={encodeURI(product.imageMain)}
             alt={product.name}
-            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
-            style={{ opacity: currentImg === 0 ? 1 : 0 }}
+            className="absolute inset-0 z-0 w-full h-full object-cover object-center"
             loading={firstScreen ? 'eager' : 'lazy'}
             decoding="async"
-            aria-hidden={currentImg !== 0}
           />
           <img
-            src={encodeURI(b)}
+            src={encodeURI(product.imageHover)}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
-            style={{ opacity: currentImg === 1 ? 1 : 0 }}
+            className="absolute inset-0 z-10 w-full h-full object-cover object-center opacity-0 group-hover:animate-productHoverCrossfade will-change-[opacity]"
             loading={firstScreen ? 'eager' : 'lazy'}
             decoding="async"
-            aria-hidden={currentImg !== 1}
           />
         </div>
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to top, rgba(253,252,251,0.85) 0%, transparent 45%)',
-          }}
-        />
         {product.tag && (
           <span className="absolute top-3 left-3 px-2.5 py-1 bg-card-brown text-soft-white font-sans text-xs md:text-[12px] uppercase tracking-wider rounded">
             {product.tag}
