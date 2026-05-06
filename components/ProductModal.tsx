@@ -106,7 +106,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   <button
                     type="button"
                     onClick={toggleSlide}
-                    className="relative h-[320px] w-full overflow-hidden rounded-[12px] cursor-pointer group/slide focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3C3228]/30"
+                    className="relative w-full aspect-[3/4] overflow-hidden rounded-[12px] bg-transparent cursor-pointer group/slide focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3C3228]/30"
                     aria-label="Сменить фото"
                   >
                     {[product.imageMain, product.imageHover].map((src, i) => (
@@ -114,7 +114,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                         key={src}
                         src={encodeURI(src)}
                         alt={i === 0 ? product.name : ''}
-                        className="absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ease-in-out"
+                        className="absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-300 ease-in-out"
                         style={{ opacity: slide === i ? 1 : 0 }}
                         loading="lazy"
                         decoding="async"
